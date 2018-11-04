@@ -13,7 +13,9 @@ export class AppComponent {
       console.log(message);
     });
 
-    terminalSubscription.on();
+    terminalSubscription.on('connect', (context) => {
+      console.log(context);
+    });
   }
 
 }
