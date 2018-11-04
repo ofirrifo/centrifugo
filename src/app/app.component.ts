@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import Centrifuge from 'centrifuge';
-import SockJS from 'sockjs-client';
+import { CentrifugeUtils } from './utils/centrifuge-utils';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +9,11 @@ import SockJS from 'sockjs-client';
 export class AppComponent {
 
   constructor() {
-    const centrifuge = new Centrifuge('https://centrifuge.example.com/connection/sockjs', {
-      sockjs: SockJS
+    const terminalSubscription = CentrifugeUtils.instance.centrifuge.subscribe('terminal', (message) => {
+      console.log(message);
     });
 
+    terminalSubscription.on();
   }
 
 }
