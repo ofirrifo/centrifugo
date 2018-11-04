@@ -1,5 +1,6 @@
+import Centrifuge from 'centrifuge';
 import { Component } from '@angular/core';
-import { CentrifugeUtils } from './utils/centrifuge-utils';
+
 
 @Component({
   selector: 'app-root',
@@ -8,14 +9,30 @@ import { CentrifugeUtils } from './utils/centrifuge-utils';
 })
 export class AppComponent {
 
+  result: any;
+
   constructor() {
-    const terminalSubscription = CentrifugeUtils.instance.centrifuge.subscribe('terminal', (message) => {
-      console.log(message);
+    const sock = new Centrifuge('ws://localhost:8000/connection/websocket');
+    sock.setToken('');
+    sock.connect();
+    sock.on('connect', function (e) {
+      console.log('websocekt connected!');
     });
 
-    terminalSubscription.on('connect', (context) => {
-      console.log(context);
+    const subscription = sock.subscribe('terminal', ({data}) => {
+      if (data.forServer) {
+
+      }
+      if (data.forClient) {
+        this.result = data.name;
+      }
+      console.log(data);
     });
+
+    subscription.publish({forClient: true, name: 'ofir1'});
+
+
+    // sock.send(JSON.stringify({ name: 'aaa'}) );
   }
 
 }
